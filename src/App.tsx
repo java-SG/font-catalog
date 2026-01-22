@@ -3,6 +3,7 @@ import Fonts from "./Fonts.tsx";
 import { fonts } from "./Imports.tsx"
 import { styles } from "./Styles.tsx"
 import Filter from "./Filter.tsx"
+import { ListOfFonts } from "./ListOfFonts.tsx"
 
 export default function App() {
 
@@ -15,27 +16,6 @@ export default function App() {
         .map(path => path.split("fonts/")[1]?.split("/")[0])
         .filter(Boolean) /* Remove any falsies, shouldnt be neccesary but it would ruin the dropdown list if it had any */
     ))]; /* Adding None with a shallow copy of the initializing listOfFilters */
-  const ListOfFonts = () => {
-    return (
-      <>
-        {Object
-          .keys(fonts)
-          /* Filters now dynamically based of listOfFilters, so any new parent folders added for fonts will scale along */
-          .filter(path => !filter ? true : path.includes(`/${filter}/`))
-          .map((path, index) => {
-            const fontName = path.split("/").pop()!.replace(/\.\w+$/, "");
-            return (
-              <div className={styles.card} key={index}>
-                <div className={styles.info} style={{ fontFamily: "Arial" }}>{fontName}</div>
-                <div className={styles.info} style={{ fontFamily: fontName }}>{fontName}</div>
-                <div className={styles.sample} style={{ fontFamily: fontName }}>{sampleText}</div>
-              </div>
-            );
-          })}
-      </>
-    )
-  };
-
 
   return (
     <>
@@ -47,7 +27,7 @@ export default function App() {
           <input className={styles.sample} value={sampleText} onChange={(input) => setSampleText(input.target.value)} placeholder="Sample text here" />
         </div>
         <div className={styles.list}>
-          <ListOfFonts />
+          <ListOfFonts sampleText={sampleText} filter={filter} />
         </div>
       </div>
     </>
