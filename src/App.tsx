@@ -1,43 +1,12 @@
-import { useEffect, useState } from "react";
-import { fonts } from "./Fonts.tsx";
+import { useState } from "react";
+import Fonts from "./Fonts.tsx";
+import { fonts } from "./Imports.tsx"
 import { styles } from "./Styles.tsx"
-
-function getFontFormat(path: string) {
-  if (path.endsWith(".ttf")) return "truetype";
-  if (path.endsWith(".otf")) return "opentype";
-  if (path.endsWith(".woff")) return "woff";
-  if (path.endsWith(".woff2")) return "woff2";
-  return undefined
-}
+import Filter from "./Filter.tsx"
 
 export default function App() {
 
-  useEffect(() => {
-    let customFontCSS = "";
-
-    Object.entries(fonts).forEach(([path, module]) => {
-      const fileURL = module.default;
-      const fileName = path.split("/").pop()?.replace(/\.\w+$/, "");
-
-      customFontCSS += `
-        @font-face {
-          font-family: '${fileName}';
-          src: url('${fileURL}') format('${getFontFormat(path)}');
-          font-weight: normal;
-          font-style: normal;
-          font-display: swap;
-        }
-      `;
-    });
-
-    const style = document.createElement("style");
-    style.innerHTML = customFontCSS;
-    document.head.appendChild(style);
-
-    return () => { document.head.removeChild(style) };
-  }, []);
-
-  const [sampleText, setSampleText] = useState<string>("Sample text here")
+  const [sampleText, setSampleText] = useState<string>("")
   const [filter, setFilter] = useState<string | null>(null)
   const listOfFilters = ["None", ...Array.from(
     new Set(
@@ -46,27 +15,9 @@ export default function App() {
         .map(path => path.split("fonts/")[1]?.split("/")[0])
         .filter(Boolean) /* Remove any falsies, shouldnt be neccesary but it would ruin the dropdown list if it had any */
     ))]; /* Adding None with a shallow copy of the initializing listOfFilters */
-
-  return (
-    <div className={styles.page}>
-      <div className={styles.card}>
-        <select className={styles.info} value={filter ?? ""} onChange={(event) => {
-          const value = event.target.value;
-          setFilter(value === "" || value === "None" ? null : value);
-        }} >
-          <option value="" disabled hidden>
-            Select Filter
-          </option>
-          {listOfFilters.map((filterName) => (
-            <option key={filterName} value={filterName}>
-              {filterName}
-            </option>
-          ))}
-        </select>
-        <div className={styles.info}>Sample text:</div>
-        <input className={styles.sample} value={sampleText} onChange={(input) => setSampleText(input.target.value)} />
-      </div>
-      <div className={styles.list}>
+  const ListOfFonts = () => {
+    return (
+      <>
         {Object
           .keys(fonts)
           /* Filters now dynamically based of listOfFilters, so any new parent folders added for fonts will scale along */
@@ -81,7 +32,24 @@ export default function App() {
               </div>
             );
           })}
+      </>
+    )
+  };
+
+
+  return (
+    <>
+      <Fonts /> {/* Inject fonts */}
+      <div className={styles.page}>
+        <div className={styles.card}>
+          <Filter listOfFilters={listOfFilters} filter={filter} setFilter={setFilter} />
+          <div className={styles.info}>Sample text:</div>
+          <input className={styles.sample} value={sampleText} onChange={(input) => setSampleText(input.target.value)} placeholder="Sample text here" />
+        </div>
+        <div className={styles.list}>
+          <ListOfFonts />
+        </div>
       </div>
-    </div>
+    </>
   );
 }
