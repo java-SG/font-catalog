@@ -2,7 +2,7 @@
 
 .hide-scrollbar {
   overflow-y: auto;
-  -ms-overflow-style: none;
+  -ms-overflow-style: auto;
   scrollbar-width: none;
 }
 
@@ -10,19 +10,32 @@
   display: none;
 }
 
-@keyframes colour-fade {
-  0%, 100% {background-color: rgb(147 197 253);}
-  33% {background-color: rgb(252 165 165);}
-  66% {background-color: rgb(134 239 172);}
+[data-neon="on"] .neon-inner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 1.5vh;
+  border: 0.25vh solid #00f0ff;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 0.5em #00f0ff,
+    inset 0 0 1em #00f0ff;
+  animation: pulse 15s infinite;
 }
 
-.bg-colour-fade {
-  animation: colour-fade 60s ease-in-out infinite;
+[data-neon="on"] .neon-outer {
+  position: relative;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .bg-colour-fade {
-    animation: none;
-    background-color: rgb(142, 142, 142);
-  }
+[data-neon="on"] .neon-outer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 2.5vh;
+  pointer-events: none;
+  box-shadow:
+    0 0 0.5em #00f0ff,
+    0 0 0.75em #00f0ff,
+    0 0 1em #00f0ff;
+  animation: pulse 15s infinite;
 }

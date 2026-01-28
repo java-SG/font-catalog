@@ -1,0 +1,1 @@
+declare module "opentype.js"; /* Required to declare opentype to TS */
