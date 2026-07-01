@@ -12,3 +12,5 @@ To do:
 - Add way to link up personal folder for session usage if possible
 - Subjugate to personal portfolio when it is actually made
 - Restyle font cards for nicer look
+
+Link -> https://java-sg.github.io/font-catalog/
